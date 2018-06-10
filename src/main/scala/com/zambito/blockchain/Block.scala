@@ -1,3 +1,5 @@
+package com.zambito.blockchain
+
 import scala.compat.Platform
 
 case class Block(data: String, previousHash: String) {
