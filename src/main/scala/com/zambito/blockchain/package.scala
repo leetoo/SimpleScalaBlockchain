@@ -5,12 +5,12 @@ package object blockchain {
     import java.security.MessageDigest
     import java.math.BigInteger
 
-    def encrypt: String =
+    def encrypted(algorithm: String = "SHA-256"): String =
       String.format(
         "%032x",
         new BigInteger(
           1,
-          MessageDigest.getInstance("SHA-256").digest(str.getBytes("UTF-8"))
+          MessageDigest.getInstance(algorithm).digest(str.getBytes("UTF-8"))
         )
       )
   }
