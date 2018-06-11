@@ -14,4 +14,7 @@ package object blockchain {
         )
       )
   }
+
+  type Blockchain = Seq[Block]
+
 }
