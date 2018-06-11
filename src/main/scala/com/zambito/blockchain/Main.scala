@@ -1,6 +1,7 @@
 package com.zambito.blockchain
 
 import com.google.gson.GsonBuilder
+import scala.collection.JavaConverters
 
 object Main extends App {
 
@@ -11,6 +12,6 @@ object Main extends App {
       Stream.empty[Block]
 
   println(
-    new GsonBuilder().setPrettyPrinting().create().toJson(scala.collection.JavaConverters.seqAsJavaList(blockchain))
+    new GsonBuilder().setPrettyPrinting().create().toJson(JavaConverters.seqAsJavaList(blockchain))
   )
 }
