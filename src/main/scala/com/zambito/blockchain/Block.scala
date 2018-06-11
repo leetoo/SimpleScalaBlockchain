@@ -5,7 +5,7 @@ import scala.xml.Elem
 
 case class Block(data: String, previousHash: String) {
   val timeStamp: Long = Platform.currentTime
-  val hash: String = (previousHash + timeStamp.toString + data).encrypted()
+  val hash: String = Block.calculateHash(this)
 
   def toXML: Elem = {
     <block>
@@ -14,5 +14,11 @@ case class Block(data: String, previousHash: String) {
       <timeStamp>{timeStamp}</timeStamp>
       <hash>{hash}</hash>
     </block>
+  }
+}
+
+object Block {
+  def calculateHash(b: Block): String = {
+    (b.previousHash + b.timeStamp.toString + b.data).encrypted()
   }
 }
