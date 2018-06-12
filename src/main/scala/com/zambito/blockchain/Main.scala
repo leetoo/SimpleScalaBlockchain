@@ -18,10 +18,14 @@ object Main extends App {
   def isChainValid: Blockchain => Boolean = {
     case fst +: snd +: tail
       if snd.hash == Block.calculateHash(snd) &&
-        fst.hash == snd.previousHash => isChainValid(snd +: tail)
+         fst.hash == snd.previousHash &&
+         snd.isNonceValid => isChainValid(snd +: tail)
+
     case fst +: snd +: _
       if snd.hash != Block.calculateHash(snd) ||
-      fst.hash != snd.previousHash => false
+         fst.hash != snd.previousHash ||
+         !snd.isNonceValid => false
+
     case _ => true
   }
 
