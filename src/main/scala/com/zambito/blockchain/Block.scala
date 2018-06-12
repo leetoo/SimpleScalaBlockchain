@@ -3,8 +3,10 @@ package com.zambito.blockchain
 import scala.compat.Platform
 import scala.xml.Elem
 
-case class Block(data: String, previousHash: String, nonce: Int = 0) {
-  val timeStamp: Long = Platform.currentTime
+case class Block(data: String,
+                 previousHash: String,
+                 timeStamp: Long = Platform.currentTime,
+                 nonce: Int = 0) {
   val hash: String = Block.calculateHash(this)
   val isNonceValid: Boolean = hash.startsWith(Array.fill(DIFFICULTY)('0').mkString)
 
@@ -25,7 +27,7 @@ object Block {
 
   def mineBlock(block: Block): Block = {
       Stream.from(0)
-        .map(n => block.copy(nonce = n))
+        .map(n => block.copy(nonce = n, timeStamp = Platform.currentTime))
         .filter(_.isNonceValid)
         .head
   }
