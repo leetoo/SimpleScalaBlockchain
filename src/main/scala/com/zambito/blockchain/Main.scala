@@ -6,9 +6,9 @@ import scala.xml.PrettyPrinter
 object Main extends App {
 
   lazy val blockchain: Blockchain =
-    Block("First block data", "0") #::
-    Block("This is the second block", blockchain.head.hash) #::
-    Block("Data for the third block", blockchain(1).hash) #::
+    Block.mineBlock(Block("First block data", "0")) #::
+    Block.mineBlock(Block("This is the second block", blockchain.head.hash)) #::
+    Block.mineBlock(Block("Data for the third block", blockchain(1).hash)) #::
     Stream.empty[Block]
 
   println(new PrettyPrinter(195, 4).format(
