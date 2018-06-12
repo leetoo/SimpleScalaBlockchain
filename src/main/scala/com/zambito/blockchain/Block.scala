@@ -6,15 +6,15 @@ import scala.xml.Elem
 case class Block(data: String, previousHash: String, nonce: Int = 0) {
   val timeStamp: Long = Platform.currentTime
   val hash: String = Block.calculateHash(this)
-  val isNonceValid: Boolean = hash.startsWith(Array.fill(DIFFICULTY)('1').mkString)
+  val isNonceValid: Boolean = hash.startsWith(Array.fill(DIFFICULTY)('0').mkString)
 
   def toXML: Elem = {
     <block>
-      <data>{data}</data>
-      <previousHash>{previousHash}</previousHash>
-      <nonce>{nonce}</nonce>
-      <timeStamp>{timeStamp}</timeStamp>
       <hash>{hash}</hash>
+      <previousHash>{previousHash}</previousHash>
+      <data>{data}</data>
+      <timeStamp>{timeStamp}</timeStamp>
+      <nonce>{nonce}</nonce>
     </block>
   }
 }
