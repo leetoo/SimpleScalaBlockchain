@@ -1,7 +1,7 @@
 package com.zambito
 
 package object blockchain {
-  val DIFFICULTY = 1
+  val DIFFICULTY = 5
 
   implicit class StringUtil(str: String) {
     import java.security.MessageDigest

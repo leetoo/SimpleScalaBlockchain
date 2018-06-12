@@ -11,9 +11,19 @@ object Main extends App {
     Block.mineBlock(Block("Data for the third block", blockchain(1).hash)) #::
     Stream.empty[Block]
 
-  println(new PrettyPrinter(195, 4).format(
-    <blockchain>{ blockchain.map(_.toXML) }</blockchain>
-  ))
+
+  def lazyBlockchainPrint(blockchain: Blockchain): Unit = {
+    println("<blockchain>")
+    blockchain.map(b =>
+      new PrettyPrinter(195, 4).format(b.toXML)
+        .replaceAll("^", "    ")
+        .replaceAll("\n", "\n    "))
+      .foreach(println)
+    println("</blockchain>")
+  }
+
+
+  lazyBlockchainPrint(blockchain)
 
   def isChainValid: Blockchain => Boolean = {
     case fst +: snd +: tail
