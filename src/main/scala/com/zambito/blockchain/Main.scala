@@ -21,7 +21,7 @@ object Main extends App {
 //      Block(Seq(), blockchain(1).hash).mined #::
 //      Stream.empty[Block]
 
-  val UTXOs: mutable.Map[String, TransactionOutput] = mutable.Map()
+  val UTXOs = mutable.Map[String, TransactionOutput]()
 
   val genesisTransaction = Transaction(
     coinBase.publicKey,
@@ -60,7 +60,7 @@ object Main extends App {
     case _ => true
   }
 
-  implicit def processTransaction(transaction: Transaction, block: Block): Block = {
+  def processTransaction(transaction: Transaction, block: Block): Block = {
     if(transaction.hasValidSignature && transaction.getInputsValue >= MIN_TRANSACTION) {
       transaction.outputs
         .foreach(o => UTXOs.put(o.id, o))
