@@ -5,6 +5,7 @@ import java.util.Base64
 
 package object blockchain {
   val DIFFICULTY = 3
+  val MIN_TRANSACTION = 0.0f
 
   type Blockchain = Seq[Block]
 

@@ -3,19 +3,22 @@ package com.zambito.blockchain
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import scala.xml.PrettyPrinter
 import java.security.Security
+import scala.collection.mutable
 
 
 object Main extends App {
   Security.addProvider(new BouncyCastleProvider)
 
-  val bob = new Wallet
   val alice = new Wallet
+  val bob = new Wallet
 
   lazy val blockchain: Blockchain =
     Block.mineBlock(Block("First block data", "0")) #::
     Block.mineBlock(Block("This is the second block", blockchain.head.hash)) #::
     Block.mineBlock(Block("Data for the third block", blockchain(1).hash)) #::
     Stream.empty[Block]
+
+  val UTXOs: mutable.Map[String, TransactionOutput] = mutable.Map()
 
 
   def lazyBlockchainPrint(blockchain: Blockchain): Unit = {
@@ -42,12 +45,21 @@ object Main extends App {
     case _ => true
   }
 
+  def processTransaction(transaction: Transaction): Boolean = {
+    if(transaction.hasValidSignature && transaction.getInputsValue >= MIN_TRANSACTION) {
+      transaction.outputs
+        .foreach(o => UTXOs.put(o.id, o))
 
-  println(s"Bob's private key: ${bob.privateKey}")
-  println(s"Bob's public key:  ${bob.publicKey}")
+      transaction.inputs
+        .map(ti => ti.copy(UTXO = UTXOs.get(ti.transactionOutputId)))
+        .flatMap(_.UTXO)
+        .foreach(o => UTXOs.remove(o.id))
+      true
+    } else false
+  }
 
 
-  val unsignedTransaction = Transaction(bob.publicKey, aklice.publicKey, 5, Seq[TransactionInput]())
+  val unsignedTransaction = Transaction(bob.publicKey, alice.publicKey, 5, Seq[TransactionInput]())
 
   val transaction = Transaction.signTransaction(
     unsignedTransaction,

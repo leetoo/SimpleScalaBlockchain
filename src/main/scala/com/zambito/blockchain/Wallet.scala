@@ -10,7 +10,7 @@ class Wallet {
     val ecSpec = new ECGenParameterSpec("prime192v1")
     keyGen.initialize(ecSpec, random)
 
-    val keyPair = keyGen.generateKeyPair()
+    val keyPair = keyGen.generateKeyPair
 
     (keyPair.getPrivate, keyPair.getPublic)
   }
