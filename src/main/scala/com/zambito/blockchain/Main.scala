@@ -13,9 +13,9 @@ object Main extends App {
   val bob = new Wallet
 
   lazy val blockchain: Blockchain =
-    Block.mineBlock(Block("First block data", "0")) #::
-    Block.mineBlock(Block("This is the second block", blockchain.head.hash)) #::
-    Block.mineBlock(Block("Data for the third block", blockchain(1).hash)) #::
+    Block(Seq(), "0").mined #::
+    Block(Seq(), blockchain.head.hash).mined #::
+    Block(Seq(), blockchain(1).hash).mined #::
     Stream.empty[Block]
 
   val UTXOs: mutable.Map[String, TransactionOutput] = mutable.Map()
@@ -33,12 +33,12 @@ object Main extends App {
 
   def isChainValid: Blockchain => Boolean = {
     case fst +: snd +: tail
-      if snd.hash == Block.calculateHash(snd) &&
+      if snd.hash == snd.hash &&
          fst.hash == snd.previousHash &&
          snd.isNonceValid => isChainValid(snd +: tail)
 
     case fst +: snd +: _
-      if snd.hash != Block.calculateHash(snd) ||
+      if snd.hash != snd.hash ||
          fst.hash != snd.previousHash ||
          !snd.isNonceValid => false
 
@@ -51,7 +51,7 @@ object Main extends App {
         .foreach(o => UTXOs.put(o.id, o))
 
       transaction.inputs
-        .map(ti => ti.copy(UTXO = UTXOs.get(ti.transactionOutputId)))
+        .map(i => i.copy(UTXO = UTXOs.get(i.transactionOutputId)))
         .flatMap(_.UTXO)
         .foreach(o => UTXOs.remove(o.id))
       true
@@ -61,10 +61,7 @@ object Main extends App {
 
   val unsignedTransaction = Transaction(bob.publicKey, alice.publicKey, 5, Seq[TransactionInput]())
 
-  val transaction = Transaction.signTransaction(
-    unsignedTransaction,
-    bob.privateKey
-  )
+  val transaction = unsignedTransaction.signedWith(bob.privateKey)
 
 
   println(s"Valid signature on unsigned: ${unsignedTransaction.hasValidSignature}")

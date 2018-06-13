@@ -42,7 +42,7 @@ class Wallet {
       val inputs = aux(UTXOs)
 
       Some {
-        Transaction.signTransaction(Transaction(publicKey, recipient, value, inputs), privateKey)
+        Transaction(publicKey, recipient, value, inputs).signedWith(privateKey)
       }
     } else None
   }
