@@ -45,7 +45,7 @@ object Main extends App {
     case _ => true
   }
 
-  def processTransaction(transaction: Transaction): Boolean = {
+  implicit def processTransaction(transaction: Transaction, block: Block): Block = {
     if(transaction.hasValidSignature && transaction.getInputsValue >= MIN_TRANSACTION) {
       transaction.outputs
         .foreach(o => UTXOs.put(o.id, o))
@@ -54,8 +54,9 @@ object Main extends App {
         .map(i => i.copy(UTXO = UTXOs.get(i.transactionOutputId)))
         .flatMap(_.UTXO)
         .foreach(o => UTXOs.remove(o.id))
-      true
-    } else false
+
+      block.copy(transactions = transaction +: block.transactions)
+    } else block
   }
 
 
