@@ -9,19 +9,34 @@ import scala.collection.mutable
 object Main extends App {
   Security.addProvider(new BouncyCastleProvider)
 
+  val coinBase = new Wallet
   val alice = new Wallet
   val bob = new Wallet
 
-  lazy val blockchain: Blockchain =
-    Block(Seq(), "0").mined #::
-    Block(Seq(), blockchain.head.hash).mined #::
-    Block(Seq(), blockchain(1).hash).mined #::
-    Stream.empty[Block]
+  val blockchain = mutable.ListBuffer[Block]()
+
+//  lazy val blockchain: Blockchain =
+//    Block(Seq(), "0").mined #::
+//      Block(Seq(), blockchain.head.hash).mined #::
+//      Block(Seq(), blockchain(1).hash).mined #::
+//      Stream.empty[Block]
 
   val UTXOs: mutable.Map[String, TransactionOutput] = mutable.Map()
 
+  val genesisTransaction = Transaction(
+    coinBase.publicKey,
+    alice.publicKey,
+    100f,
+    Seq()
+  ).signedWith(coinBase.privateKey)
 
-  def lazyBlockchainPrint(blockchain: Blockchain): Unit = {
+  UTXOs.put(genesisTransaction.outputs.head.id, genesisTransaction.outputs.head)
+
+  val genesis = Block(Seq(genesisTransaction), "0").mined
+  blockchain += genesis
+
+
+  def printBlockchain(blockchain: Blockchain): Unit = {
     println("<blockchain>")
     blockchain.map(b =>
       new PrettyPrinter(195, 4).format(b.toXML)
@@ -60,17 +75,9 @@ object Main extends App {
   }
 
 
-  val unsignedTransaction = Transaction(bob.publicKey, alice.publicKey, 5, Seq[TransactionInput]())
-
-  val transaction = unsignedTransaction.signedWith(bob.privateKey)
-
-
-  println(s"Valid signature on unsigned: ${unsignedTransaction.hasValidSignature}")
-  println(s"Valid signature: ${transaction.hasValidSignature}")
-  println(s"Transaction: $transaction")
-
-
-  lazyBlockchainPrint(blockchain)
+  printBlockchain(blockchain)
 
   println(s"Is valid: ${isChainValid(blockchain)}")
+
+  println(s"Alice wallet size: ${alice.getBalance(UTXOs)}")
 }
