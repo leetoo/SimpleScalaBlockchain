@@ -9,12 +9,10 @@ case class Transaction(sender: PublicKey,
                        inputs: Seq[TransactionInput],
                        signature: Array[Byte] = Array[Byte]()) {
   val transactionId: String = {
-    Transaction.number.incrementAndGet()
-
     (sender.getStringFromKey +
       recipient.getStringFromKey +
       value.toString +
-      Transaction.number).encrypted()
+      Transaction.number.incrementAndGet().toString).encrypted()
   }
 
   val outputs: Seq[TransactionOutput] = Seq(
@@ -30,17 +28,17 @@ case class Transaction(sender: PublicKey,
 
   def getOutputValue: Float = outputs.map(_.value).sum
 
+  def signedWith(privateKey: PrivateKey): Transaction = {
+    this.copy(signature =
+      (sender.getStringFromKey +
+        recipient.getStringFromKey +
+        value.toString).signData(privateKey))
+  }
+
 }
 
 object Transaction {
   private val number = new AtomicInteger(0)
-
-  def signTransaction(transaction: Transaction, privateKey: PrivateKey): Transaction = {
-    transaction.copy(signature =
-      (transaction.sender.getStringFromKey +
-      transaction.recipient.getStringFromKey +
-      transaction.value.toString).signData(privateKey))
-  }
 }
 
 case class TransactionInput(transactionOutputId: String,
@@ -52,6 +50,7 @@ case class TransactionOutput(recipient: PublicKey,
                              parentTransactionId: String) {
   val id: String = (recipient.getStringFromKey + value.toString + parentTransactionId).encrypted()
 
-  def isMine(publicKey: PublicKey): Boolean = publicKey == recipient
+  def isMine(publicKey: PublicKey): Boolean =
+    publicKey == recipient
 
 }
