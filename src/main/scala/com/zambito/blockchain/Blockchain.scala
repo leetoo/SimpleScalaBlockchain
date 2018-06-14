@@ -1,7 +1,7 @@
 package com.zambito.blockchain
 
 case class Blockchain(blocks: Seq[Block] = Seq(),
-                      UTXOs: Map[String, TransactionOutput]) {
+                      UTXOs: Map[String, TransactionOutput] = Map()) {
 
   def isValidChain(blocks: Seq[Block] = blocks): Boolean = {
 

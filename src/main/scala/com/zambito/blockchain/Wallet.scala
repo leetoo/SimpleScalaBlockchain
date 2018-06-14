@@ -6,10 +6,11 @@ import scala.annotation.tailrec
 import scala.collection.Map
 
 /**
-  * A wallet represents an entity which can own funds.
+  * A wallet represents an entity which can control funds.
   *
   * @author Robby Zambito
-  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Wallet.java `Wallet.java`]]
+  * @see [[https://github.com/Zambito1/SimpleScalaBlockchain/blob/master/src/main/scala/com/zambito/blockchain/Wallet.scala `Source`]]
+  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Wallet.java Wallet.java]]
   */
 class Wallet {
   val (privateKey, publicKey) = {

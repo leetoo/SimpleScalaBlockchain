@@ -26,7 +26,7 @@ object Main extends App {
         alice.publicKey,
         bob.publicKey,
         33.33f,
-        Seq(TransactionInput(genesisTransaction.outputs.head.id))
+        Seq(TransactionInput(genesisTransaction.outputs.head.id, Some(genesisTransaction.outputs.head)))
       ).signedWith(alice.privateKey)
     ), "0").mined
 
@@ -46,8 +46,10 @@ object Main extends App {
   }
 
 
-
   printBlockchain(blockchain)
+
+  println(s"Bobs public key: ${bob.publicKey.getStringFromKey}")
+  println(s"Bobs private key: ${bob.privateKey.getStringFromKey}")
 
   println(s"Is valid: ${blockchain.isValidChain()}")
 

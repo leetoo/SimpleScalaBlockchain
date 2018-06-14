@@ -1,7 +1,7 @@
 package com.zambito.blockchain
 
 import java.security._
-import java.util.concurrent.atomic.AtomicInteger
+import scala.compat.Platform
 
 /**
   * A transaction of currency from one [[Wallet]] to another.
@@ -12,7 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger
   * @param inputs Proof the sender recieved to funds at some point.
   * @param signature Approval of the sender.
   * @author Robby Zambito
-  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Transaction.java `Transaction.java`]]
+  * @see [[https://github.com/Zambito1/SimpleScalaBlockchain/blob/master/src/main/scala/com/zambito/blockchain/Transaction.scala `Source`]]
+  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Transaction.java Transaction.java]]
   */
 case class Transaction(sender: PublicKey,
                        recipient: PublicKey,
@@ -23,7 +24,7 @@ case class Transaction(sender: PublicKey,
     (sender.getStringFromKey +
       recipient.getStringFromKey +
       value.toString +
-      Transaction.number.incrementAndGet().toString).encrypted()
+      Platform.currentTime.toString).encrypted()
   }
 
   val outputs: Seq[TransactionOutput] = Seq(
@@ -52,11 +53,6 @@ case class Transaction(sender: PublicKey,
         value.toString).signData(privateKey))
   }
 
-}
-
-/** Simply used to avoid hash collisions between separate [[Transaction]]s */
-object Transaction {
-  private val number = new AtomicInteger(0)
 }
 
 /**

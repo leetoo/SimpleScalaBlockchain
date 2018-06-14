@@ -11,7 +11,8 @@ import scala.xml.Elem
   * @param nonce Random number that must be found to validate the hash of this [[Block]]
   *
   * @author Robby Zambito
-  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Block.java `Block.java`]]
+  * @see [[https://github.com/Zambito1/SimpleScalaBlockchain/blob/master/src/main/scala/com/zambito/blockchain/Block.scala `Source`]]
+  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Block.java Block.java]]
   */
 case class Block(transactions: Seq[Transaction],
                  previousHash: String,
