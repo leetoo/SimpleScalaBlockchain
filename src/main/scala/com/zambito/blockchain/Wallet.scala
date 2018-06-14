@@ -5,7 +5,12 @@ import java.security.spec.ECGenParameterSpec
 import scala.annotation.tailrec
 import scala.collection.Map
 
-/** A wallet represents an entity which can own currency. */
+/**
+  * A wallet represents an entity which can own currency.
+  *
+  * @author Robby Zambito
+  * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Wallet.java `Wallet.java`]]
+  */
 class Wallet {
   val (privateKey, publicKey) = {
     val keyGen = KeyPairGenerator.getInstance("ECDSA", "BC")
