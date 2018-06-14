@@ -7,8 +7,6 @@ package object blockchain {
   val DIFFICULTY = 3
   val MIN_TRANSACTION = 0.0f
 
-  type Blockchain = Seq[Block]
-
   implicit class StringUtil(str: String) {
 
     def encrypted(algorithm: String = "SHA-256"): String = {
