@@ -5,6 +5,7 @@ import java.security.spec.ECGenParameterSpec
 import scala.annotation.tailrec
 import scala.collection.Map
 
+/** A wallet represents an entity which can own currency. */
 class Wallet {
   val (privateKey, publicKey) = {
     val keyGen = KeyPairGenerator.getInstance("ECDSA", "BC")
@@ -17,15 +18,24 @@ class Wallet {
     (keyPair.getPrivate, keyPair.getPublic)
   }
 
-  def getBalance(UTXOs: Map[String, TransactionOutput]): Float = {
-    UTXOs.values
-      .filter(_.isMine(publicKey))
-      .map(_.value)
-      .sum
-  }
+  /**
+    * Finds the sum of the UTXOs in the given blockchain that belong to the current wallet.
+    * @param blockchain Context that the wallet may own a balance in.
+    * @return Balance of the wallet in the blockchain.
+    */
+  def getBalance(blockchain: Blockchain): Float =
+    blockchain.UTXOs.values.filter(_.isMine(publicKey)).map(_.value).sum
 
-  def sendFunds(recipient: PublicKey, value: Float, UTXOs: Map[String, TransactionOutput]): Option[Transaction] = {
-    if(getBalance(UTXOs) >= value) {
+  /**
+    * If possible, creates a transaction to send to some other wallet.
+    * @param recipient [[PublicKey]] of the wallet to send the currency to.
+    * @param value Amount of currency to be sent to the recipient and removed from the current wallet.
+    * @param blockchain Context for the transaction to take place in.
+    * @return `Some Transaction` if current wallet has the funds to complete the transaction.
+    *         `None` if the current wallet does not have the funds to complete the transaction.
+    */
+  def sendFunds(recipient: PublicKey, value: Float, blockchain: Blockchain): Option[Transaction] = {
+    if(getBalance(blockchain) >= value) {
 
       @tailrec
       def aux(utxos: Map[String, TransactionOutput],
@@ -39,7 +49,7 @@ class Wallet {
         }
       }
 
-      val inputs = aux(UTXOs)
+      val inputs = aux(blockchain.UTXOs)
 
       Some {
         Transaction(publicKey, recipient, value, inputs).signedWith(privateKey)
