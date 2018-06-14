@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
   * A transaction of currency from one [[Wallet]] to another.
   *
-  * @param sender [[PublicKey]] of the [[Wallet]] that initiated the transaction, depleting their funds.
-  * @param recipient [[PublicKey]] of the [[Wallet]] which receives the funds.
+  * @param sender `PublicKey` of the [[Wallet]] that initiated the transaction, depleting their funds.
+  * @param recipient `PublicKey` of the [[Wallet]] which receives the funds.
   * @param value To be depleted from the senders balance and added to the recipients balance.
   * @param inputs Proof the sender recieved to funds at some point.
   * @param signature Approval of the sender.
@@ -42,7 +42,7 @@ case class Transaction(sender: PublicKey,
 
   /**
     * Approves the transaction with the signature of the sender.
-    * @param privateKey [[PrivateKey]] of the sender.
+    * @param privateKey `PrivateKey` of the sender.
     * @return Transaction which has been approved by the sender.
     */
   def signedWith(privateKey: PrivateKey): Transaction = {
@@ -72,7 +72,7 @@ case class TransactionInput(transactionOutputId: String,
 /**
   * Represents the output of a [[Transaction]]. This is referenced in the future when the current recipient would like
   * to create their own [[Transaction]] with the funds they recieved from this [[Transaction]].
-  * @param recipient [[PublicKey]] of the [[Wallet]] which receives the funds.
+  * @param recipient `PublicKey` of the [[Wallet]] which receives the funds.
   * @param value To be added to the recipients balance.
   * @param parentTransactionId ID of the transaction which created this output.
   * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/TransactionOutput.java `TransactionOutput.java`]]

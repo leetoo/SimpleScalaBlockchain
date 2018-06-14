@@ -20,12 +20,20 @@ object Main extends App {
     Seq()
   ).signedWith(coinBase.privateKey)
 
-  val genesis = Block(Seq(genesisTransaction), "0").mined
+  val genesis = Block(
+    Seq(genesisTransaction,
+      Transaction(
+        alice.publicKey,
+        bob.publicKey,
+        33.33f,
+        Seq(TransactionInput(genesisTransaction.outputs.head.id))
+      ).signedWith(alice.privateKey)
+    ), "0").mined
 
   val blockchain = Blockchain(
     Seq(genesis),
     Map(genesisTransaction.outputs.head.id -> genesisTransaction.outputs.head)
-  )
+  ).copy()
 
   def printBlockchain(blockchain: Blockchain): Unit = {
     println("<blockchain>")
@@ -43,7 +51,7 @@ object Main extends App {
 
   println(s"Is valid: ${blockchain.isValidChain()}")
 
-  println(s"Alice balance: ${alice.getBalance(blockchain.UTXOs)}")
+  println(s"Alice balance: ${alice.getBalance(blockchain)}")
 
-  println(s"Bobs balance: ${bob.getBalance(blockchain.UTXOs)}")
+  println(s"Bobs balance: ${bob.getBalance(blockchain)}")
 }

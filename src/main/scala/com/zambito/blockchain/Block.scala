@@ -4,8 +4,8 @@ import scala.compat.Platform
 import scala.xml.Elem
 
 /**
-  * A block represents a [[Seq]] of [[Transaction]]s
-  * @param transactions Transactions stored in the block
+  * A block represents a `Seq` of [[Transaction]]s
+  * @param transactions [[Transaction]]s stored in the block
   * @param previousHash Represents the [[Block]] that this [[Block]] extends.
   * @param timeStamp Time that was defined
   * @param nonce Random number that must be found to validate the hash of this [[Block]]
@@ -38,8 +38,8 @@ case class Block(transactions: Seq[Transaction],
   def toXML: Elem = {
     <block>
       <hash>{hash}</hash>
-      <previousHash>{previousHash}</previousHash>
       <merkleRoot>{merkleRoot}</merkleRoot>
+      <previousHash>{previousHash}</previousHash>
       <timeStamp>{timeStamp}</timeStamp>
       <nonce>{nonce}</nonce>
     </block>
@@ -50,8 +50,9 @@ case class Block(transactions: Seq[Transaction],
     * certain number of 0s.
     *
     * @example
-    *          In this block, a nonce of 12073 was found which will result in a hash beginning with four 0s
+    *          In this block, a nonce of `12073` was found which will result in a hash beginning with four 0s
     *
+    *     {{{
     *     <block>
     *         <hash>0000e35e7d9f690012cb46c716d355163a7a4dc0becb58d6b1cd2081143b39e0</hash>
     *         <previousHash>0</previousHash>
@@ -59,7 +60,8 @@ case class Block(transactions: Seq[Transaction],
     *         <timeStamp>1528953534175</timeStamp>
     *         <nonce>12073</nonce>
     *     </block>
-    * @return
+    *     }}}
+    * @return The current block with a correct nonce
     */
   def mined: Block = {
     Stream.from(0)

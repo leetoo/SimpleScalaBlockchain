@@ -32,8 +32,8 @@ class Wallet {
     blockchain.UTXOs.values.filter(_.isMine(publicKey)).map(_.value).sum
 
   /**
-    * If possible, creates a transaction to send to some other wallet.
-    * @param recipient [[PublicKey]] of the wallet to send funds to.
+    * If possible, creates a transaction to send funds to some other wallet.
+    * @param recipient `PublicKey` of the wallet to send funds to.
     * @param value Amount of currency to be sent to the recipient and removed from the current wallet.
     * @param blockchain Context for the transaction to take place in.
     * @return `Some Transaction` if current wallet has the funds to complete the transaction.
