@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 import scala.collection.Map
 
 /**
-  * A wallet represents an entity which can own currency.
+  * A wallet represents an entity which can own funds.
   *
   * @author Robby Zambito
   * @see [[https://github.com/CryptoKass/NoobChain-Tutorial-Part-2/blob/master/src/noobchain/Wallet.java `Wallet.java`]]
@@ -33,7 +33,7 @@ class Wallet {
 
   /**
     * If possible, creates a transaction to send to some other wallet.
-    * @param recipient [[PublicKey]] of the wallet to send the currency to.
+    * @param recipient [[PublicKey]] of the wallet to send funds to.
     * @param value Amount of currency to be sent to the recipient and removed from the current wallet.
     * @param blockchain Context for the transaction to take place in.
     * @return `Some Transaction` if current wallet has the funds to complete the transaction.
