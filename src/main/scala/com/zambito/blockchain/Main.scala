@@ -30,7 +30,7 @@ object Main extends App {
     Seq()
   ).signedWith(coinBase.privateKey)
 
-  UTXOs.put(genesisTransaction.outputs.head.id, genesisTransaction.outputs.head)
+  UTXOs += genesisTransaction.outputs.head.id -> genesisTransaction.outputs.head
 
   val genesis = Block(Seq(genesisTransaction), "0").mined
   blockchain += genesis
@@ -46,11 +46,30 @@ object Main extends App {
     println("</blockchain>")
   }
 
-  def isChainValid: Blockchain => Boolean = {
+  def isValidTransactions(block: Block): Boolean = {
+    val tempUTXOs = UTXOs.seq
+    val values = block.transactions
+      .forall(t =>
+        t.hasValidSignature &&
+        t.getInputsValue == t.getOutputsValue &&
+        t.inputs.forall(i =>
+          tempUTXOs.remove(i.transactionOutputId)
+            .exists(o => i.UTXO.exists(u => u.value == o.value))
+        )
+    )
+
+    if(values) {
+
+      true
+    } else false
+  }
+
+
+  def isValidChain: Blockchain => Boolean = {
     case fst +: snd +: tail
       if snd.hash == snd.hash &&
          fst.hash == snd.previousHash &&
-         snd.isNonceValid => isChainValid(snd +: tail)
+         snd.isNonceValid => isValidTransactions(snd) && isValidChain(snd +: tail)
 
     case fst +: snd +: _
       if snd.hash != snd.hash ||
@@ -77,7 +96,7 @@ object Main extends App {
 
   printBlockchain(blockchain)
 
-  println(s"Is valid: ${isChainValid(blockchain)}")
+  println(s"Is valid: ${isValidChain(blockchain)}")
 
   println(s"Alice wallet size: ${alice.getBalance(UTXOs)}")
 }

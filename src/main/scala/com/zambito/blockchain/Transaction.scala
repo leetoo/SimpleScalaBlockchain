@@ -26,7 +26,7 @@ case class Transaction(sender: PublicKey,
 
   def getInputsValue: Float = inputs.flatMap(_.UTXO).map(_.value).sum
 
-  def getOutputValue: Float = outputs.map(_.value).sum
+  def getOutputsValue: Float = outputs.map(_.value).sum
 
   def signedWith(privateKey: PrivateKey): Transaction = {
     this.copy(signature =
